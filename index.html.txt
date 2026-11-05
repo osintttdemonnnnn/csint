@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AegisCSINT</title>
+<style>
+:root{--bg:#080b12;--panel:#101722;--panel2:#151f2d;--line:#263449;--text:#edf4ff;--muted:#91a0b5;--accent:#67e6b5;--blue:#7da5ff;--danger:#ff7892}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,system-ui,Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{display:flex;min-height:100vh}.sidebar{width:245px;background:#0b1018;border-right:1px solid var(--line);padding:24px 16px}
+.brand{font-size:21px;font-weight:900;margin:0 10px 4px}.brand span{color:var(--accent)}.side-note{color:var(--muted);font-size:12px;margin:0 10px 30px}
+.nav{display:grid;gap:6px}.nav button{border:0;border-radius:9px;background:transparent;color:var(--muted);padding:12px;text-align:left}.nav button:hover,.nav button.active{background:#172438;color:white}
+.side-bottom{position:fixed;bottom:20px;width:205px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font-size:12px}
+main{max-width:1500px;width:100%;margin:auto;padding:30px}
+.topbar{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:26px}
+.eyebrow{color:var(--accent);font-size:11px;font-weight:800;letter-spacing:1.8px;margin:0 0 7px}
+h1{font-size:30px;margin:0 0 7px}.sub{color:var(--muted);margin:0}.status{border:1px solid #2a755d;color:var(--accent);border-radius:20px;padding:8px 12px;font-size:12px;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}.stat,.panel,.tool-card{background:var(--panel);border:1px solid var(--line);border-radius:14px}.stat{padding:18px}.stat b{font-size:25px}.stat span{display:block;color:var(--muted);font-size:12px;margin-top:5px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}.controls input,.controls select,.modal input,.modal textarea{background:#0b121c;color:white;border:1px solid var(--line);border-radius:9px;padding:12px;outline:none}.controls input{flex:1;min-width:240px}.controls select{min-width:170px}.primary{background:var(--accent);border:0;color:#07150f;font-weight:800;border-radius:9px;padding:0 16px}.ghost{background:var(--panel2);border:1px solid var(--line);color:white;border-radius:9px;padding:11px 14px}
+.quick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.quick button{background:#111b29;border:1px solid var(--line);color:var(--muted);border-radius:20px;padding:7px 11px}.quick button:hover{color:white;border-color:var(--accent)}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:14px}.tool-card{padding:16px;transition:.15s}.tool-card:hover{transform:translateY(-2px);border-color:#426083}
+.tool-head{display:flex;justify-content:space-between;align-items:center}.icon{width:38px;height:38px;border-radius:10px;background:#17263a;color:var(--accent);display:grid;place-items:center;font-size:20px}.fav{border:0;background:transparent;color:#64748a;font-size:21px}.fav.on{color:#ffd76a}
+.tool-card h3{margin:14px 0 7px;font-size:16px}.tool-card p{color:var(--muted);font-size:12px;line-height:1.5;min-height:52px}.tag{display:inline-block;color:#9cb4d5;background:#172334;border-radius:5px;padding:4px 7px;font-size:10px;margin:2px 3px 10px 0}.run{width:100%;background:#162538;border:1px solid #304864;color:white;border-radius:8px;padding:10px}.run:hover{background:#20354e}
+.bottom-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;margin-top:22px}.panel{padding:18px}.panel h2{font-size:16px;margin:0 0 14px}.activity{display:grid;gap:10px}.activity-item{border-bottom:1px solid var(--line);padding-bottom:9px}.activity-item:last-child{border:0}.activity-item b{font-size:13px}.activity-item small{display:block;color:var(--muted);margin-top:4px}.safe{color:var(--muted);line-height:1.6;font-size:13px}.safe strong{color:var(--accent)}
+.empty{grid-column:1/-1;color:var(--muted);padding:35px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+.modal{display:none;position:fixed;inset:0;background:#0009;z-index:5;place-items:center;padding:18px}.modal.open{display:grid}.modal-box{width:min(620px,100%);background:#101722;border:1px solid var(--line);border-radius:15px;padding:22px;box-shadow:0 20px 80px #000}
+.modal-top{display:flex;justify-content:space-between;gap:20px}.close{background:transparent;border:0;color:var(--muted);font-size:24px}.modal label{display:block;color:var(--muted);font-size:12px;margin:20px 0 7px}.modal input,.modal textarea{width:100%}.modal textarea{min-height:90px;resize:vertical}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:17px}.result{margin-top:18px;background:#0a111a;border:1px solid var(--line);border-radius:10px;padding:14px;color:var(--muted);line-height:1.55}.result strong{color:white}.demo{color:#ffd76a;font-size:12px;margin-bottom:8px}
+@media(max-width:850px){.sidebar{display:none}main{padding:20px}.stats{grid-template-columns:repeat(2,1fr)}.bottom-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">Aegis<span>CSINT</span></div>
+  <p class="side-note">Public and authorized intelligence workspace</p>
+  <nav class="nav">
+    <button class="active" data-filter="All">◈ Overview</button>
+    <button data-filter="Domains">⌁ Domains</button>
+    <button data-filter="Network">⌁ Network</button>
+    <button data-filter="Identity">⌁ Identity</button>
+    <button data-filter="Media">⌁ Media</button>
+    <button data-filter="Files">⌁ Files</button>
+    <button data-filter="Security">⌁ Security</button>
+    <button data-filter="Research">⌁ Research</button>
+    <button data-filter="Casework">⌁ Casework</button>
+  </nav>
+  <div class="side-bottom">Demo interface<br>Connect authorized providers server-side.</div>
+</aside>
+
+<main>
+<header class="topbar">
+  <div>
+    <p class="eyebrow">CSINT INVESTIGATION CONSOLE</p>
+    <h1>Research Workspace</h1>
+    <p class="sub">50 modular tools for lawful public-source investigations.</p>
+  </div>
+  <div class="status">● DEMO MODE</div>
+</header>
+
+<section class="stats">
+  <div class="stat"><b id="toolCount">50</b><span>Available tools</span></div>
+  <div class="stat"><b id="runCount">0</b><span>Investigation runs</span></div>
+  <div class="stat"><b id="caseCount">0</b><span>Saved cases</span></div>
+  <div class="stat"><b id="evidenceCount">0</b><span>Evidence items</span></div>
+</section>
+
+<section class="controls">
+  <input id="search" placeholder="Search tools, categories, or capabilities…">
+  <select id="category"></select>
+  <button class="ghost" id="newCase">＋ New case</button>
+  <button class="ghost" id="exportLog">Export log</button>
+  <button class="ghost" id="clearLog">Reset</button>
+</section>
+
+<div class="quick">
+  <button data-filter="All">All tools</button>
+  <button data-filter="Domains">Domains</button>
+  <button data-filter="Identity">Identity</button>
+  <button data-filter="Media">Media</button>
+  <button data-filter="Security">Security</button>
+</div>
+
+<section class="tool-grid" id="toolGrid"></section>
+
+<section class="bottom-grid">
+  <div class="panel">
+    <h2>Recent activity</h2>
+    <div class="activity" id="activity"></div>
+  </div>
+  <div class="panel">
+    <h2>Responsible-use controls</h2>
+    <p class="safe"><strong>Use only public, user-provided, licensed, or authorized data.</strong><br>
+    Do not use this dashboard for stalking, credential theft, unauthorized access, covert tracking, or publishing sensitive personal information.</p>
+  </div>
+</section>
+</main>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div><p class="eyebrow" id="modalCategory"></p><h2 id="modalTitle"></h2><p class="sub" id="modalDescription"></p></div>
+      <button class="close" id="closeModal">×</button>
+    </div>
+    <label id="targetLabel">Target</label>
+    <input id="targetInput">
+    <input type="file" id="fileInput" style="display:none">
+    <label>Investigation notes</label>
+    <textarea id="notes" placeholder="Optional case context or analyst notes…"></textarea>
+    <div class="modal-actions">
+      <button class="ghost" id="cancelModal">Cancel</button>
+      <button class="primary" id="runTool">Run tool</button>
+    </div>
+    <div class="result" id="result" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+const tools=[
+["domain","Domain Intelligence","Domains","◎","Registration, DNS, hosting, and website context.","example.com"],
+["dns","DNS Records","Domains","⌁","Review A, AAAA, MX, TXT, NS, and CNAME records.","example.com"],
+["rdap","RDAP / WHOIS","Domains","◌","Inspect public registration and registrar information.","example.com"],
+["subdomains","Subdomain Inventory","Domains","⌗","Organize discovered subdomains from authorized sources.","example.com"],
+["ct","Certificate Transparency","Domains","▣","Search certificate records for domain relationships.","example.com"],
+["ip","IP Intelligence","Network","◉","Review provider, ASN, location estimate, and risk context.","8.8.8.8"],
+["asn","ASN / BGP Context","Network","⌁","Inspect autonomous-system ownership and routing context.","AS15169"],
+["reverse-dns","Reverse DNS","Network","↔","Resolve public PTR records for an IP address.","8.8.8.8"],
+["passive-exposure","Passive Exposure Review","Network","△","Review passive exposure indicators for an authorized asset.","example.com"],
+["redirect","URL Redirect Trace","Domains","↗","Trace redirects and inspect the final destination.","https://example.com"],
+["headers","HTTP Header Analysis","Domains","≡","Review response headers, cookies, and caching clues.","https://example.com"],
+["tls","TLS Certificate Inspector","Security","▤","Inspect certificate names, issuer, expiry, and protocol context.","example.com"],
+["reputation","URL Reputation","Security","✓","Compare a URL against available reputation sources.","https://example.com"],
+["email","Email Intelligence","Identity","@", "Review public account-presence and exposure clues.","name@example.com"],
+["breach","Breach Exposure Check","Security","⚠","Check an authorized email against exposure sources.","name@example.com"],
+["email-header","Email Header Analysis","Security","✉","Analyze raw routing and authentication headers.","Paste raw email headers"],
+["username","Username Intelligence","Identity","@", "Search supported public platforms for a handle.","example_user"],
+["people","People Research","Identity","♙","Research a name with optional location context.","Morgan Example, California"],
+["phone","Phone Intelligence","Identity","☎","Review carrier, line type, and numbering context.","+1 555 123 4567"],
+["handle","Handle Normalizer","Identity","#", "Normalize username variations for further research.","example_user"],
+["image-meta","Image Metadata","Media","▧","Inspect available image metadata and provenance clues.","Upload an image"],
+["image-hash","Image Hash","Media","◇","Calculate a local-style file fingerprint for comparison.","Upload an image"],
+["reverse-image","Reverse Image Search Prep","Media","◈","Prepare image identifiers and search notes.","Image description or file"],
+["ocr","OCR Extractor","Media","T","Extract visible text from an authorized image.","Upload an image"],
+["exif-risk","EXIF Privacy Check","Media","⌾","Identify location and device metadata privacy risks.","Upload an image"],
+["screenshot","Screenshot Analyzer","Media","▣","Review screenshot details, text, and visible indicators.","Upload a screenshot"],
+["archive","Archive Timeline","Research","◷","Find historical snapshots and dated page changes.","https://example.com"],
+["change","Website Change Compare","Research","⇄","Compare two authorized captures or versions of a page.","Two capture URLs"],
+["pdf-meta","PDF Metadata","Files","▤","Inspect author, creator, dates, and document properties.","Upload a PDF"],
+["doc-text","Document Text Extractor","Files","▤","Extract searchable text from an authorized document.","Upload a document"],
+["hash","Hash Calculator","Files","#", "Calculate a file or text hash for evidence integrity.","Text or file reference"],
+["file-type","File Type Inspector","Files","▦","Identify file signatures, extensions, and MIME context.","Filename or file"],
+["ioc-normalizer","IOC Normalizer","Security","⌁","Normalize domains, URLs, IPs, hashes, and emails.","Paste indicators"],
+["defang","Defang / Refang","Security","⚙","Safely convert indicators for sharing or analysis.","example[.]com"],
+["ioc-extractor","IOC Extractor","Security","⌕","Extract indicators from analyst-provided text.","Paste report text"],
+["yara","YARA Rule Helper","Security","Y","Draft a defensive YARA rule from supplied traits.","Describe file traits"],
+["cve","CVE Lookup","Security","C","Review NVD vulnerability records and severity context.","CVE-2024-0001"],
+["cpe","CPE Version Matcher","Security","V","Match software and versions to CPE identifiers.","Apache Log4j 2.14.1"],
+["security-headers","Security Headers","Security","▤","Review defensive web security header configuration.","https://example.com"],
+["mail-auth","SPF / DKIM / DMARC","Security","✉","Review domain email-authentication records.","example.com"],
+["robots","Robots & Sitemap","Domains","≣","Inspect public robots.txt and sitemap references.","https://example.com"],
+["canonical","Canonical URL Check","Domains","↗","Review canonical, alternate, and redirect relationships.","https://example.com/page"],
+["tech","Web Tech Fingerprint","Domains","⌘","Identify visible technologies from authorized web responses.","https://example.com"],
+["github","Public GitHub Search","Research","◉","Search public repositories for supplied research terms.","organization or keyword"],
+["git-secrets","Authorized Git Secret Scan","Security","⚠","Scan an authorized repository or local export for secret patterns.","Repository path or URL"],
+["discord","Discord Invite Inspector","Research","◉","Inspect a Discord invite or server identifier.","discord.gg/example"],
+["youtube","YouTube Metadata","Media","▶","Review public video or channel metadata.","Video URL or channel URL"],
+["crypto","Crypto Wallet Explorer","Research","₿","Review public wallet activity on supported networks.","Wallet address"],
+["timeline","Case Timeline","Casework","◷","Create dated events and relationships for a case.","Case name or event"],
+["evidence","Evidence Package Builder","Casework","▣","Organize citations, notes, hashes, and source records.","Evidence item or citation"]
+].map(x=>({id:x[0],name:x[1],cat:x[2],icon:x[3],desc:x[4],placeholder:x[5]}));
+
+let runs=JSON.parse(localStorage.getItem("aegisRuns")||"[]");
+let cases=JSON.parse(localStorage.getItem("aegisCases")||"[]");
+let favs=new Set(JSON.parse(localStorage.getItem("aegisFavs")||"[]"));
+let activeCategory="All", selectedTool=null;
+
+const $=s=>document.querySelector(s);
+const grid=$("#toolGrid"), category=$("#category"), search=$("#search");
+
+function esc(v){return String(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+
+function render(){
+  const q=search.value.toLowerCase();
+  const visible=tools.filter(t=>
+    (activeCategory==="All"||t.cat===activeCategory) &&
+    (t.name.toLowerCase().includes(q)||t.cat.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q))
+  );
+  grid.innerHTML=visible.length?visible.map(t=>`
+    <article class="tool-card">
+      <div class="tool-head"><div class="icon">${t.icon}</div>
+      <button class="fav ${favs.has(t.id)?"on":""}" data-fav="${t.id}">${favs.has(t.id)?"★":"☆"}</button></div>
+      <h3>${esc(t.name)}</h3><p>${esc(t.desc)}</p>
+      <span class="tag">${esc(t.cat)}</span><span class="tag">Authorized use</span>
+      <button class="run" data-run="${t.id}">Open tool ↗</button>
+    </article>`).join(""):`<div class="empty">No tools match your search.</div>`;
+
+  $("#toolCount").textContent=tools.length;
+  $("#runCount").textContent=runs.length;
+  $("#caseCount").textContent=cases.length;
+  $("#evidenceCount").textContent=runs.length;
+  renderActivity();
+}
+
+function renderActivity(){
+  $("#activity").innerHTML=runs.length?runs.slice(0,7).map(r=>`
+    <div class="activity-item"><b>${esc(r.tool)}</b><small>${esc(r.target)} · ${esc(r.time)}</small></div>
+  `).join(""):`<div class="activity-item"><small>No runs yet. Open a tool to begin.</small></div>`;
+}
+
+function setCategory(cat){
+  activeCategory=cat; category.value=cat;
+  document.querySelectorAll("[data-filter]").forEach(b=>b.classList.toggle("active",b.dataset.filter===cat));
+  render();
+}
+
+[...new Set(tools.map(t=>t.cat))].forEach(c=>{
+  const o=document.createElement("option");o.value=c;o.textContent=c;category.appendChild(o);
+});
+category.insertAdjacentHTML("afterbegin",'<option value="All">All categories</option>');
+category.onchange=()=>setCategory(category.value);
+search.oninput=render;
+
+document.addEventListener("click",e=>{
+  const filter=e.target.closest("[data-filter]");
+  if(filter)setCategory(filter.dataset.filter);
+  const fav=e.target.closest("[data-fav]");
+  if(fav){
+    const id=fav.dataset.fav;
+    favs.has(id)?favs.delete(id):favs.add(id);
+    localStorage.setItem("aegisFavs",JSON.stringify([...favs]));render();
+  }
+  const run=e.target.closest("[data-run]");
+  if(run)openTool(run.dataset.run);
+});
+
+function openTool(id){
+  selectedTool=tools.find(t=>t.id===id);
+  $("#modalCategory").textContent=selectedTool.cat;
+  $("#modalTitle").textContent=selectedTool.name;
+  $("#modalDescription").textContent=selectedTool.desc;
+  $("#targetInput").placeholder=selectedTool.placeholder;
+  $("#targetInput").value="";
+  $("#notes").value="";
+  $("#result").style.display="none";
+  $("#fileInput").style.display=["image-meta","image-hash","ocr","screenshot","pdf-meta","doc-text"].includes(id)?"block":"none";
+  $("#targetInput").style.display=$("#fileInput").style.display==="block"?"none":"block";
+  $("#modal").classList.add("open");
+}
+
+function closeModal(){$("#modal").classList.remove("open");selectedTool=null}
+$("#closeModal").onclick=closeModal;$("#cancelModal").onclick=closeModal;
+$("#modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
+
+$("#runTool").onclick=()=>{
+  if(!selectedTool)return;
+  const file=$("#fileInput").files[0];
+  const target=file?file.name:$("#targetInput").value.trim();
+  if(!target){
+    $("#result").style.display="block";
+    $("#result").innerHTML="<strong>Input required.</strong><br>Enter a target or choose a file before running this tool.";
+    return;
+  }
+  const now=new Date().toLocaleString();
+  runs.unshift({tool:selectedTool.name,target,time:now,notes:$("#notes").value.trim()});
+  localStorage.setItem("aegisRuns",JSON.stringify(runs.slice(0,100)));
+  $("#result").style.display="block";
+  $("#result").innerHTML=`
+    <div class="demo">DEMO RESULT — no external provider was contacted</div>
+    <strong>${esc(selectedTool.name)} accepted the input.</strong><br>
+    Target: ${esc(target)}<br>
+    Scope: public or authorized sources only.<br>
+    Next step: connect this tool to a server-side adapter with approved data providers.
+  `;
+  render();
+};
+
+$("#newCase").onclick=()=>{
+  const name=prompt("Case name:");
+  if(name&&name.trim()){
+    cases.unshift({name:name.trim(),created:new Date().toLocaleString()});
+    localStorage.setItem("aegisCases",JSON.stringify(cases));
+    render();
+  }
+};
+
+$("#clearLog").onclick=()=>{
+  if(confirm("Reset local demo history, cases, and favorites?")){
+    runs=[];cases=[];favs.clear();
+    localStorage.removeItem("aegisRuns");
+    localStorage.removeItem("aegisCases");
+    localStorage.removeItem("aegisFavs");
+    render();
+  }
+};
+
+$("#exportLog").onclick=()=>{
+  const blob=new Blob([JSON.stringify({exportedAt:new Date().toISOString(),runs,cases},null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="aegis-csint-log.json";a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+render();
+</script>
+</body>
+</html>
