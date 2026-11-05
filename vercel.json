@@ -1,0 +1,6 @@
+{
+  "framework": null,
+  "installCommand": "echo No dependencies required",
+  "buildCommand": "mkdir -p public && cp index.html.txt public/index.html",
+  "outputDirectory": "public"
+}
